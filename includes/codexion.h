@@ -6,7 +6,7 @@
 /* By: cel-hajj <cel-hajj@student.s19.be>        +#+  +:+       +#+        */
 /*                                             +#+#+#+#+#+   +#+           */
 /* Created: 2026/04/27 01:13:07 by cel-hajj        #+#    #+#              */
-/* Updated: 2026/05/17 21:51:07 by cel-hajj        ###   ########.fr       */
+/* Updated: 2026/05/21 18:15:14 by cel-hajj        ###   ########.fr       */
 /*                                                                         */
 /* *********************************************************************** */
 
@@ -19,7 +19,8 @@
 
 # include <stdio.h>
 # include <stdlib.h>
-#include <string.h>
+# include <string.h>
+# include <unistd.h>
 # include <limits.h>
 # include <pthread.h>
 # include <sys/time.h>
@@ -40,11 +41,12 @@ typedef struct s_dongle
 	pthread_cond_t	cond;
 	int				in_use;
 	long			last_used_time;
+	t_queue			*queue;
 }	t_dongle;
 
 typedef struct s_sim
 {
-	int				number_of_coders;
+	int				nb_of_coders;
 	long			sim_start;
 	int				sim_stop;
 	long			time_to_compile;
@@ -84,11 +86,18 @@ typedef struct s_queue
 	int		capacity;
 }	t_queue;
 
+/* ****************************************** */
+/* *** Parsing and Verification Functions *** */
+/* ****************************************** */
+int		parse_and_extract(char **argv, t_sim *sim);
+
 /* ********************* */
 /* *** Coder Actions *** */
 /* ********************* */
 
 void	take_dongle(t_coder *coder);
+void	take_odd_dongles(t_coder *coder);
+void	take_even_dongles(t_coder *coder);
 void	compile(t_coder *coder);
 void	put_dongle(t_coder *coder);
 void	debug(t_coder *coder);
@@ -109,5 +118,16 @@ t_queue	*queue_init(int capacity);
 void	queue_push(t_queue *queue, t_entry *entry);
 t_entry	queue_pop(t_queue *queue);
 void	queue_free(t_queue *queue);
+
+/* *************************** */
+/* *** Execution Functions *** */
+/* *************************** */
+int		initialize_coders_and_dongles(t_sim *sim);
+void	*work(void *arg);
+
+/* ********************** */
+/* *** Memory Cleanup *** */
+/* ********************** */
+int		clean_up_initializing(t_sim *simulator);
 
 #endif

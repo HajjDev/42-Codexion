@@ -6,7 +6,7 @@
 /* By: cel-hajj <cel-hajj@student.s19.be>        +#+  +:+       +#+        */
 /*                                             +#+#+#+#+#+   +#+           */
 /* Created: 2026/04/27 01:06:41 by cel-hajj        #+#    #+#              */
-/* Updated: 2026/04/27 01:10:49 by cel-hajj        ###   ########.fr       */
+/* Updated: 2026/05/21 18:00:49 by cel-hajj        ###   ########.fr       */
 /*                                                                         */
 /* *********************************************************************** */
 
@@ -63,7 +63,7 @@ int	parse_and_extract(char **argv, t_sim *sim)
 	valid_arguments = verify_args(argv);
 	if (valid_arguments)
 	{
-		sim->number_of_coders = atoi(argv[1]);
+		sim->nb_of_coders = atoi(argv[1]);
 		sim->time_to_burnout = atoi(argv[2]);
 		sim->time_to_compile = atoi(argv[3]);
 		sim->time_to_debug = atoi(argv[4]);
