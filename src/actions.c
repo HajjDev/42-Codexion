@@ -11,6 +11,7 @@
 /* *********************************************************************** */
 
 #include "../includes/codexion.h"
+#include <pthread.h>
 
 void	take_dongle(t_coder *coder)
 {
@@ -18,8 +19,6 @@ void	take_dongle(t_coder *coder)
 		take_even_dongles(coder);
 	else
 		take_odd_dongles(coder);
-	coder->left_dongle->in_use = 1;
-	coder->right_dongle->in_use = 1;
 }
 
 void	compile(t_coder *coder)
@@ -40,9 +39,23 @@ void	compile(t_coder *coder)
 
 void	put_dongle(t_coder *coder)
 {
+	struct timeval	tv;
+	long			ms;
+
+	pthread_mutex_lock(&coder->left_dongle->mutex);
 	coder->left_dongle->in_use = 0;
-	coder->right_dongle->in_use = 0;
+	gettimeofday(&tv, NULL);
+	ms = ((tv.tv_sec * 1000) + tv.tv_usec / 1000) - coder->sim->sim_start;
+	coder->left_dongle->last_used_time = ms;
+	pthread_cond_broadcast(&coder->left_dongle->cond);
 	pthread_mutex_unlock(&(coder->left_dongle->mutex));
+
+	pthread_mutex_lock(&coder->right_dongle->mutex);
+	coder->right_dongle->in_use = 0;
+	gettimeofday(&tv, NULL);
+	ms = ((tv.tv_sec * 1000) + tv.tv_usec / 1000) - coder->sim->sim_start;
+	coder->right_dongle->last_used_time = ms;
+	pthread_cond_broadcast(&coder->right_dongle->cond);
 	pthread_mutex_unlock(&(coder->right_dongle->mutex));
 }
 

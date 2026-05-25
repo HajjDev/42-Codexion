@@ -16,6 +16,7 @@ int	initialize(t_sim *sim)
 {
 	struct timeval	tv;
 	int				i;
+	pthread_t		monitor_thread;
 
 	gettimeofday(&tv, NULL);
 	sim->sim_start = tv.tv_sec * 1000 + tv.tv_usec / 1000;
@@ -25,12 +26,15 @@ int	initialize(t_sim *sim)
 
 	if (!initialize_coders_and_dongles(sim))
 		return (clean_up_initializing(sim));
+	pthread_create(&monitor_thread, NULL, monitor, sim);
 	i = 0;
 	while (i < sim->nb_of_coders)
 	{
 		pthread_join(sim->coders[i].thread, NULL);
 		i++;
 	}
+	pthread_join(monitor_thread, NULL);
+	clean_up_initializing(sim);
 	return (1);
 }
 

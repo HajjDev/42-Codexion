@@ -20,7 +20,7 @@ static int	initialize_dongle(t_dongle *dongle, t_sim *simulator)
 		return (0);
 	pthread_cond_init(&dongle->cond, NULL);
 	pthread_mutex_init(&dongle->mutex, NULL);
-	dongle->last_used_time = 0;
+	dongle->last_used_time = -(simulator->dongle_cooldown);
 	return (1);
 }
 
@@ -39,19 +39,22 @@ static int	initialize_coder(t_coder *coder, int id,
 
 int	initialize_coders_and_dongles(t_sim *sim)
 {
-	int i;
+	int	i;
 
+	sim->coders = NULL;
+	sim->dongles = NULL;
 	sim->coders = (t_coder *)malloc(sim->nb_of_coders * sizeof(t_coder));
 	if (!sim->coders)
-		return (clean_up_initializing(sim));
+		return (0);
 	sim->dongles = (t_dongle *)malloc(sim->nb_of_coders * sizeof(t_dongle));
 	if (!sim->dongles)
-		return (clean_up_initializing(sim));
+		return (0);
+	memset(sim->dongles, 0, sim->nb_of_coders * sizeof(t_dongle));
 	i = 0;
 	while (i < sim->nb_of_coders)
 	{
 		if (!initialize_dongle(&sim->dongles[i], sim))
-			return (clean_up_initializing(sim));
+			return (0);
 		i++;
 	}
 	i = 0;

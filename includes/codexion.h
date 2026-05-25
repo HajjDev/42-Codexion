@@ -109,6 +109,7 @@ void	refactor(t_coder *coder);
 
 void	ft_swap(t_queue *queue, int i1, int i2);
 int		ft_min(t_entry entry1, t_entry entry2, int i);
+int		sim_is_stopped(t_sim *sim);
 
 /* *********************** */
 /* *** Queue Functions *** */
@@ -124,6 +125,7 @@ void	queue_free(t_queue *queue);
 /* *************************** */
 int		initialize_coders_and_dongles(t_sim *sim);
 void	*work(void *arg);
+void	*monitor(void *arg);
 
 /* ********************** */
 /* *** Memory Cleanup *** */
