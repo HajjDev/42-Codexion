@@ -6,12 +6,11 @@
 /* By: cel-hajj <cel-hajj@student.s19.be>        +#+  +:+       +#+        */
 /*                                             +#+#+#+#+#+   +#+           */
 /* Created: 2026/05/12 07:30:28 by cel-hajj        #+#    #+#              */
-/* Updated: 2026/05/21 17:33:54 by cel-hajj        ###   ########.fr       */
+/* Updated: 2026/05/28 09:06:48 by cel-hajj        ###   ########.fr       */
 /*                                                                         */
 /* *********************************************************************** */
 
 #include "../includes/codexion.h"
-#include <pthread.h>
 
 void	take_dongle(t_coder *coder)
 {

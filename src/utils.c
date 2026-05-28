@@ -38,6 +38,20 @@ int	sim_is_stopped(t_sim *sim)
 	return (stopped_status);
 }
 
+void	broadcast_all_dongles(t_sim *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->nb_of_coders)
+	{
+		pthread_mutex_lock(&sim->dongles[i].mutex);
+		pthread_cond_broadcast(&sim->dongles[i].cond);
+		pthread_mutex_unlock(&sim->dongles[i].mutex);
+		i++;
+	}
+}
+
 void	free_up_dongle(t_dongle *dongle)
 {
 	if (!dongle->queue)

@@ -64,13 +64,13 @@ typedef struct s_sim
 
 typedef struct s_coder
 {
-	int			id;
-	int			compiles_done;
-	long		last_compiled_time;
-	t_dongle	*left_dongle;
-	t_dongle	*right_dongle;
-	t_sim		*sim;
-	pthread_t	thread;
+	int				id;
+	volatile int	compiles_done;
+	volatile long	last_compiled_time;
+	t_dongle		*left_dongle;
+	t_dongle		*right_dongle;
+	t_sim			*sim;
+	pthread_t		thread;
 }	t_coder;
 
 typedef struct s_entry
@@ -110,6 +110,7 @@ void	refactor(t_coder *coder);
 void	ft_swap(t_queue *queue, int i1, int i2);
 int		ft_min(t_entry entry1, t_entry entry2, int i);
 int		sim_is_stopped(t_sim *sim);
+void	broadcast_all_dongles(t_sim *sim);
 
 /* *********************** */
 /* *** Queue Functions *** */

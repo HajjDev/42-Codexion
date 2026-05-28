@@ -6,7 +6,7 @@
 /* By: cel-hajj <cel-hajj@student.s19.be>        +#+  +:+       +#+        */
 /*                                             +#+#+#+#+#+   +#+           */
 /* Created: 2026/04/14 07:56:17 by cel-hajj        #+#    #+#              */
-/* Updated: 2026/05/21 18:14:49 by cel-hajj        ###   ########.fr       */
+/* Updated: 2026/05/27 10:13:48 by cel-hajj        ###   ########.fr       */
 /*                                                                         */
 /* *********************************************************************** */
 
@@ -45,7 +45,7 @@ int	main(int argc, char **argv)
 
 	if (argc != 9)
 	{
-		printf("Please make sure to include all mandatory keys.");
+		printf("Please make sure to include all mandatory keys.\n");
 		return (1);
 	}
 	sim = (t_sim *)malloc(sizeof(t_sim));
@@ -54,10 +54,11 @@ int	main(int argc, char **argv)
 	valid_args = parse_and_extract(argv, sim);
 	if (!valid_args)
 	{
-		printf("Please make sure to only pass valid arguments!");
+		printf("Please make sure to only pass valid arguments!\n");
 		free(sim);
 		return (1);
 	}
-	initialize(sim);
+	if (!initialize(sim))
+		return (1);
 	return (0);
 }

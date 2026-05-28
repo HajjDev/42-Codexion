@@ -73,7 +73,7 @@ static void	wait_for_dongle(t_coder *coder, t_dongle *dongle)
 	free(entry);
 	gettimeofday(&tv, NULL);
 	ms = ((tv.tv_sec * 1000) + tv.tv_usec / 1000) - coder->sim->sim_start;
-	while (!coder->sim->sim_stop && dongle_not_ready(coder, dongle, ms))
+	while (!sim_is_stopped(coder->sim) && dongle_not_ready(coder, dongle, ms))
 	{
 		cond_wait_dongle(coder, dongle, ms);
 		gettimeofday(&tv, NULL);

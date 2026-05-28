@@ -12,20 +12,6 @@
 
 #include "../includes/codexion.h"
 
-static void	broadcast_all_dongles(t_sim *sim)
-{
-	int	i;
-
-	i = 0;
-	while (i < sim->nb_of_coders)
-	{
-		pthread_mutex_lock(&sim->dongles[i].mutex);
-		pthread_cond_broadcast(&sim->dongles[i].cond);
-		pthread_mutex_unlock(&sim->dongles[i].mutex);
-		i++;
-	}
-}
-
 static void	*print_burnout_and_stop(t_coder coder, t_sim *sim)
 {
 	struct timeval	tv;
@@ -100,10 +86,17 @@ void	*work(void *arg)
 	{
 		take_dongle(coder);
 		if (sim_is_stopped(coder->sim))
+		{
+			put_dongle(coder);
 			return (NULL);
+		}
 		compile(coder);
 		put_dongle(coder);
+		if (sim_is_stopped(coder->sim))
+			return (NULL);
 		debug(coder);
+		if (sim_is_stopped(coder->sim))
+			return (NULL);
 		refactor(coder);
 	}
 	return (NULL);
