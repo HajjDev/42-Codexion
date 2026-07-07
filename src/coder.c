@@ -43,16 +43,22 @@ static int	check_coders(t_sim *sim)
 	struct timeval	tv;
 	int				i;
 	int				valid;
+	long			last_compiled;
+	int				compiles_done;
 
 	i = 0;
 	valid = 1;
 	while (i < sim->nb_of_coders)
 	{
+		pthread_mutex_lock(&sim->coders[i].data_mutex);
+		last_compiled = sim->coders[i].last_compiled_time;
+		compiles_done = sim->coders[i].compiles_done;
+		pthread_mutex_unlock(&sim->coders[i].data_mutex);
 		gettimeofday(&tv, NULL);
 		if (((tv.tv_sec * 1000) + (tv.tv_usec / 1000) - sim->sim_start)
-			- sim->coders[i].last_compiled_time >= sim->time_to_burnout)
+			- last_compiled >= sim->time_to_burnout)
 			return (print_burnout_and_stop(sim->coders[i], sim), -1);
-		if (sim->coders[i].compiles_done < sim->number_of_compiles_required)
+		if (compiles_done < sim->number_of_compiles_required)
 			valid = 0;
 		i++;
 	}

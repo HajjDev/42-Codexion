@@ -6,7 +6,7 @@
 /*   By: cel-hajj <cel-hajj@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 13:33:06 by cel-hajj          #+#    #+#             */
-/*   Updated: 2026/07/07 13:33:41 by cel-hajj         ###   ########.fr       */
+/*   Updated: 2026/07/08 01:16:11 by cel-hajj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_dongle
 typedef struct s_sim
 {
 	int				nb_of_coders;
+	int				coders_ready;
 	long			sim_start;
 	int				sim_stop;
 	long			time_to_compile;
@@ -67,6 +68,7 @@ typedef struct s_coder
 	int				id;
 	volatile int	compiles_done;
 	volatile long	last_compiled_time;
+	pthread_mutex_t	data_mutex;
 	t_dongle		*left_dongle;
 	t_dongle		*right_dongle;
 	t_sim			*sim;
@@ -124,6 +126,10 @@ void	queue_free(t_queue *queue);
 /* *** Execution Functions *** */
 /* *************************** */
 int		initialize_coders_and_dongles(t_sim *sim);
+int		allocate_sim_arrays(t_sim *sim);
+int		initialize_dongle(t_dongle *dongle, t_sim *simulator);
+int		initialize_coder(t_coder *coder, int id,
+			t_dongle *dongles, t_sim *simulator);
 void	*work(void *arg);
 void	*monitor(void *arg);
 
@@ -131,5 +137,7 @@ void	*monitor(void *arg);
 /* *** Memory Cleanup *** */
 /* ********************** */
 int		clean_up_initializing(t_sim *simulator);
+void	free_up_dongles(t_sim *sim);
+void	destroy_coder_mutexes(t_sim *sim);
 
 #endif

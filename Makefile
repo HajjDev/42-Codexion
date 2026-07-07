@@ -6,7 +6,7 @@
 #    By: cel-hajj <cel-hajj@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/07 13:36:43 by cel-hajj          #+#    #+#              #
-#    Updated: 2026/07/07 13:36:45 by cel-hajj         ###   ########.fr        #
+#    Updated: 2026/07/08 01:16:09 by cel-hajj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ SRC=./src/actions_utils.c \
 	./src/coder.c \
 	./src/codexion.c \
 	./src/initialize.c \
+	./src/initialize_utils.c \
 	./src/queue.c \
 	./src/utils.c
 OBJ=$(SRC:.c=.o)

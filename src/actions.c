@@ -36,8 +36,10 @@ void	compile(t_coder *coder)
 	pthread_mutex_lock(&(coder->sim->print_mutex));
 	printf("%ld %d is compiling\n", ms, coder->id);
 	pthread_mutex_unlock(&(coder->sim->print_mutex));
+	pthread_mutex_lock(&coder->data_mutex);
 	coder->compiles_done++;
 	coder->last_compiled_time = ms;
+	pthread_mutex_unlock(&coder->data_mutex);
 	usleep(coder->sim->time_to_compile * 1000);
 }
 
