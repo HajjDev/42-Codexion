@@ -1,14 +1,14 @@
-/* *********************************************************************** */
-/*                                                                         */
-/*                                                     :::      ::::::::   */
-/* codexion.h                                        :+:      :+:    :+:   */
-/*                                                 +:+ +:+         +:+     */
-/* By: cel-hajj <cel-hajj@student.s19.be>        +#+  +:+       +#+        */
-/*                                             +#+#+#+#+#+   +#+           */
-/* Created: 2026/04/27 01:13:07 by cel-hajj        #+#    #+#              */
-/* Updated: 2026/05/21 18:15:14 by cel-hajj        ###   ########.fr       */
-/*                                                                         */
-/* *********************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   codexion.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cel-hajj <cel-hajj@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/07 13:33:06 by cel-hajj          #+#    #+#             */
+/*   Updated: 2026/07/07 13:33:41 by cel-hajj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
@@ -96,8 +96,7 @@ int		parse_and_extract(char **argv, t_sim *sim);
 /* ********************* */
 
 void	take_dongle(t_coder *coder);
-void	take_odd_dongles(t_coder *coder);
-void	take_even_dongles(t_coder *coder);
+void	wait_for_dongle(t_coder *coder, t_dongle *dongle);
 void	compile(t_coder *coder);
 void	put_dongle(t_coder *coder);
 void	debug(t_coder *coder);

@@ -1,14 +1,14 @@
-/* *********************************************************************** */
-/*                                                                         */
-/*                                                     :::      ::::::::   */
-/* utils.c                                           :+:      :+:    :+:   */
-/*                                                 +:+ +:+         +:+     */
-/* By: cel-hajj <cel-hajj@student.s19.be>        +#+  +:+       +#+        */
-/*                                             +#+#+#+#+#+   +#+           */
-/* Created: 2026/05/17 21:43:45 by cel-hajj        #+#    #+#              */
-/* Updated: 2026/05/21 18:14:13 by cel-hajj        ###   ########.fr       */
-/*                                                                         */
-/* *********************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cel-hajj <cel-hajj@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/07 13:36:39 by cel-hajj          #+#    #+#             */
+/*   Updated: 2026/07/07 13:36:40 by cel-hajj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
@@ -50,34 +50,4 @@ void	broadcast_all_dongles(t_sim *sim)
 		pthread_mutex_unlock(&sim->dongles[i].mutex);
 		i++;
 	}
-}
-
-void	free_up_dongle(t_dongle *dongle)
-{
-	if (!dongle->queue)
-		return ;
-	queue_free(dongle->queue);
-	pthread_mutex_destroy(&dongle->mutex);
-	pthread_cond_destroy(&dongle->cond);
-}
-
-int	clean_up_initializing(t_sim *simulator)
-{
-	int	i;
-
-	i = 0;
-	free(simulator->coders);
-	if (simulator->dongles)
-	{
-		while (i < simulator->nb_of_coders)
-		{
-			free_up_dongle(&simulator->dongles[i]);
-			i++;
-		}
-		free(simulator->dongles);
-	}
-	pthread_mutex_destroy(&simulator->print_mutex);
-	pthread_mutex_destroy(&simulator->stop_mutex);
-	free(simulator);
-	return (0);
 }

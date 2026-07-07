@@ -1,14 +1,14 @@
-/* *********************************************************************** */
-/*                                                                         */
-/*                                                     :::      ::::::::   */
-/* actions_utils.c                                   :+:      :+:    :+:   */
-/*                                                 +:+ +:+         +:+     */
-/* By: cel-hajj <cel-hajj@student.s19.be>        +#+  +:+       +#+        */
-/*                                             +#+#+#+#+#+   +#+           */
-/* Created: 2026/05/21 17:32:15 by cel-hajj        #+#    #+#              */
-/* Updated: 2026/05/21 18:15:42 by cel-hajj        ###   ########.fr       */
-/*                                                                         */
-/* *********************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   actions_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cel-hajj <cel-hajj@student.42belgium.be    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/07 13:32:55 by cel-hajj          #+#    #+#             */
+/*   Updated: 2026/07/07 13:33:01 by cel-hajj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
@@ -59,7 +59,17 @@ static void	cond_wait_dongle(t_coder *coder, t_dongle *dongle, long ms)
 		pthread_cond_wait(&dongle->cond, &dongle->mutex);
 }
 
-static void	wait_for_dongle(t_coder *coder, t_dongle *dongle)
+static void	acquire_dongle(t_coder *coder, t_dongle *dongle, long ms)
+{
+	dongle->in_use = 1;
+	queue_pop(dongle->queue);
+	pthread_mutex_unlock(&dongle->mutex);
+	pthread_mutex_lock(&(coder->sim->print_mutex));
+	printf("%ld %d has taken a dongle\n", ms, coder->id);
+	pthread_mutex_unlock(&(coder->sim->print_mutex));
+}
+
+void	wait_for_dongle(t_coder *coder, t_dongle *dongle)
 {
 	struct timeval	tv;
 	long			ms;
@@ -79,27 +89,8 @@ static void	wait_for_dongle(t_coder *coder, t_dongle *dongle)
 		gettimeofday(&tv, NULL);
 		ms = ((tv.tv_sec * 1000) + tv.tv_usec / 1000) - coder->sim->sim_start;
 	}
-	if (!coder->sim->sim_stop)
-	{
-		dongle->in_use = 1;
-		queue_pop(dongle->queue);
-		pthread_mutex_unlock(&dongle->mutex);
-		pthread_mutex_lock(&(coder->sim->print_mutex));
-		printf("%ld %d has taken a dongle\n", ms, coder->id);
-		pthread_mutex_unlock(&(coder->sim->print_mutex));
-	}
+	if (!sim_is_stopped(coder->sim))
+		acquire_dongle(coder, dongle, ms);
 	else
 		pthread_mutex_unlock(&dongle->mutex);
-}
-
-void	take_odd_dongles(t_coder *coder)
-{
-	wait_for_dongle(coder, coder->right_dongle);
-	wait_for_dongle(coder, coder->left_dongle);
-}
-
-void	take_even_dongles(t_coder *coder)
-{
-	wait_for_dongle(coder, coder->left_dongle);
-	wait_for_dongle(coder, coder->right_dongle);
 }

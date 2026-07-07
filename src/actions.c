@@ -1,23 +1,29 @@
-/* *********************************************************************** */
-/*                                                                         */
-/*                                                     :::      ::::::::   */
-/* actions.c                                         :+:      :+:    :+:   */
-/*                                                 +:+ +:+         +:+     */
-/* By: cel-hajj <cel-hajj@student.s19.be>        +#+  +:+       +#+        */
-/*                                             +#+#+#+#+#+   +#+           */
-/* Created: 2026/05/12 07:30:28 by cel-hajj        #+#    #+#              */
-/* Updated: 2026/05/28 09:06:48 by cel-hajj        ###   ########.fr       */
-/*                                                                         */
-/* *********************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   actions.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cel-hajj <cel-hajj@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/07 13:36:07 by cel-hajj          #+#    #+#             */
+/*   Updated: 2026/07/07 13:36:10 by cel-hajj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
 void	take_dongle(t_coder *coder)
 {
 	if (coder->id % 2 == 0)
-		take_even_dongles(coder);
+	{
+		wait_for_dongle(coder, coder->left_dongle);
+		wait_for_dongle(coder, coder->right_dongle);
+	}
 	else
-		take_odd_dongles(coder);
+	{
+		wait_for_dongle(coder, coder->right_dongle);
+		wait_for_dongle(coder, coder->left_dongle);
+	}
 }
 
 void	compile(t_coder *coder)
@@ -27,7 +33,6 @@ void	compile(t_coder *coder)
 
 	gettimeofday(&tv, NULL);
 	ms = ((tv.tv_sec * 1000) + tv.tv_usec / 1000) - coder->sim->sim_start;
-
 	pthread_mutex_lock(&(coder->sim->print_mutex));
 	printf("%ld %d is compiling\n", ms, coder->id);
 	pthread_mutex_unlock(&(coder->sim->print_mutex));
@@ -48,7 +53,6 @@ void	put_dongle(t_coder *coder)
 	coder->left_dongle->last_used_time = ms;
 	pthread_cond_broadcast(&coder->left_dongle->cond);
 	pthread_mutex_unlock(&(coder->left_dongle->mutex));
-
 	pthread_mutex_lock(&coder->right_dongle->mutex);
 	coder->right_dongle->in_use = 0;
 	gettimeofday(&tv, NULL);
@@ -65,7 +69,6 @@ void	debug(t_coder *coder)
 
 	gettimeofday(&tv, NULL);
 	ms = ((tv.tv_sec * 1000) + tv.tv_usec / 1000) - coder->sim->sim_start;
-
 	pthread_mutex_lock(&(coder->sim->print_mutex));
 	printf("%ld %d is debugging\n", ms, coder->id);
 	pthread_mutex_unlock(&(coder->sim->print_mutex));
@@ -79,7 +82,6 @@ void	refactor(t_coder *coder)
 
 	gettimeofday(&tv, NULL);
 	ms = ((tv.tv_sec * 1000) + tv.tv_usec / 1000) - coder->sim->sim_start;
-
 	pthread_mutex_lock(&(coder->sim->print_mutex));
 	printf("%ld %d is refactoring\n", ms, coder->id);
 	pthread_mutex_unlock(&(coder->sim->print_mutex));

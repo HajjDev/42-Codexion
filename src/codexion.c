@@ -1,14 +1,14 @@
-/* *********************************************************************** */
-/*                                                                         */
-/*                                                     :::      ::::::::   */
-/* codexion.c                                        :+:      :+:    :+:   */
-/*                                                 +:+ +:+         +:+     */
-/* By: cel-hajj <cel-hajj@student.s19.be>        +#+  +:+       +#+        */
-/*                                             +#+#+#+#+#+   +#+           */
-/* Created: 2026/04/14 07:56:17 by cel-hajj        #+#    #+#              */
-/* Updated: 2026/05/27 10:13:48 by cel-hajj        ###   ########.fr       */
-/*                                                                         */
-/* *********************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   codexion.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cel-hajj <cel-hajj@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/07 13:36:25 by cel-hajj          #+#    #+#             */
+/*   Updated: 2026/07/07 13:36:26 by cel-hajj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
@@ -23,7 +23,6 @@ int	initialize(t_sim *sim)
 	pthread_mutex_init(&sim->print_mutex, NULL);
 	pthread_mutex_init(&sim->stop_mutex, NULL);
 	sim->sim_stop = 0;
-
 	if (!initialize_coders_and_dongles(sim))
 		return (clean_up_initializing(sim));
 	pthread_create(&monitor_thread, NULL, monitor, sim);
