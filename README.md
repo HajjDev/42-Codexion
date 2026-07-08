@@ -77,7 +77,7 @@ After a dongle is released, it must rest for `dongle_cooldown` milliseconds befo
 
 A dedicated monitor thread runs independently and checks every coder's `last_compiled_time` in a tight loop with a 1ms sleep. If any coder's elapsed time since their last compile (or since the start of the simulation, if they haven't compiled yet) reaches `time_to_burnout`, the monitor logs the burnout and stops the simulation. The burnout message is always printed within the required 10ms window.
 
-The `last_compiled_time` and `compiles_done` fields are marked `volatile` so the monitor always reads the latest values written by the coder threads without needing a mutex on those fields.
+The `last_compiled_time` and `compiles_done` fields are marked `volatile` and additionally protected by each coder's `data_mutex`: the coder thread locks it when writing these fields in `compile()`, and the monitor thread locks it when reading them in `check_coders()`. This guarantees the monitor always sees a consistent, up-to-date pair of values instead of relying on `volatile` alone.
 
 ### Log serialization
 
@@ -92,6 +92,7 @@ All output goes through a shared `print_mutex`. Every `printf` that logs a state
 - **`dongle->mutex`** — one per dongle. Protects `in_use`, `last_used_time`, and the dongle's priority queue. Any coder that wants to read or modify a dongle's state must hold this lock.
 - **`sim->print_mutex`** — shared across all threads. Every log message locks this before calling `printf` and releases it immediately after.
 - **`sim->stop_mutex`** — protects the `sim_stop` flag. Both the monitor (which sets it) and coder threads (which read it via `sim_is_stopped()`) go through this mutex, eliminating the data race on the stop signal.
+- **`coder->data_mutex`** — one per coder. Protects `last_compiled_time` and `compiles_done`. The coder thread locks it when updating both fields in `compile()`; the monitor thread locks it when reading them in `check_coders()`.
 
 ### Condition variables
 
@@ -106,7 +107,7 @@ All output goes through a shared `print_mutex`. Every `printf` that logs a state
 
 ### Communication between coders and the monitor
 
-Coders write to `last_compiled_time` and `compiles_done` directly (no lock, since each field has a single writer). The monitor reads these fields and, when it detects a burnout or completion, sets `sim_stop = 1` under `stop_mutex` and then broadcasts all dongle condition variables. Coder threads check `sim_is_stopped()` at each step of their loop and exit cleanly if the simulation has been stopped.
+Coders write to `last_compiled_time` and `compiles_done` under `data_mutex`, and the monitor reads them under the same lock. The monitor, when it detects a burnout or completion, sets `sim_stop = 1` under `stop_mutex` and then broadcasts all dongle condition variables. Coder threads check `sim_is_stopped()` at each step of their loop and exit cleanly if the simulation has been stopped.
 
 ---
 
