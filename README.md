@@ -117,6 +117,6 @@ Coders write to `last_compiled_time` and `compiles_done` under `data_mutex`, and
 - *The Art of Multiprocessor Programming* — Herlihy & Shavit (reference for priority queues and lock-free structures)
 - `pthread_cond_timedwait(3)` man page — used to implement precise cooldown wake-ups
 - [Dining Philosophers Problem — Wikipedia](https://en.wikipedia.org/wiki/Dining_philosophers_problem) — background on the classic problem this is based on
-- [Coffman conditions — Wikipedia](https://en.wikipedia.org/wiki/Deadlock#Coffman_conditions) — used to analyze and prevent deadlock
+- [DeadLock — Wikipedia](https://en.wikipedia.org/wiki/Deadlock_(computer_science)) — used to analyze and prevent deadlock
 
 **AI usage:** Claude Code (Anthropic) was used during this project to help identify edge cases in the thread synchronization logic (data races on `sim_stop`, missing stop checks before `debug` and `refactor`, dongle not being released on early exit), and to fix Norm violations (function line counts, function counts per file). All generated suggestions were reviewed, understood, and adapted manually. The core design, architecture, and implementation decisions were made independently.
